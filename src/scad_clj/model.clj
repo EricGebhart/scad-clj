@@ -133,6 +133,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; other
 
+(defn offset [{:keys [delta join-type miter-limit]
+               :or [delta 10 join-type :round]} & block]
+  (let [join-type (when (some #{join-type} [:round :miter :bevel]) (name join-type))]
+  `(:offset {:delta ~delta :join-type ~join-type :miter-limit ~miter-limit} ~@block)))
+
 (defn extrude-linear [{:keys [height twist convexity]} & block]
   `(:extrude-linear {:height ~height :twist ~twist :convexity ~convexity} ~@block))
 

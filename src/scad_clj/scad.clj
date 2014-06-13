@@ -48,7 +48,9 @@
       (join ", " [piece (make-arguments rest)]))))
 
 (defn map-to-arg-string [m]
-  (join ", " (map (fn [[k v]] (str (name k) "=" (make-arguments [v])) ) m)))
+  (join ", " (filter identity
+                     (map (fn [[k v]] (if (not (nil? v))
+                                       (str (name k) "=" (make-arguments [v]))) ) m))))
 
 (defmethod write-expr :include [depth [form {:keys [library]}]]
   (list (indent depth) "include <" library">\n"  ))
@@ -173,6 +175,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; other
+
+(defmethod write-expr :offset [depth [form arg-map & block]]
+  (concat
+   (list (indent depth) "offset (" (map-to-arg-string arg-map) ") {\n")
+   (mapcat #(write-expr (+ depth 1) %1) block)
+   (list (indent depth) "}\n")))
 
 (defmethod write-expr :projection [depth [form {:keys [cut]} & block]]
   (concat
