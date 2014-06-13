@@ -48,7 +48,7 @@
       (join ", " [piece (make-arguments rest)]))))
 
 (defn map-to-arg-string [m]
-  (join ", " (filter identity
+  (join ", " (keep identity
                      (map (fn [[k v]] (if (not (nil? v))
                                        (str (name k) "=" (make-arguments [v]))) ) m))))
 
